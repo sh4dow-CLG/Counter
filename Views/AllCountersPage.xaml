@@ -6,7 +6,7 @@
              x:DataType="models:AllCounters"
              Title="Liczniki">
     <Grid Padding="20"
-          RowDefinitions="Auto, *"
+          RowDefinitions="Auto, *, Auto"
           RowSpacing="12">
         <Grid Grid.Row="0"
               ColumnDefinitions="*, Auto"
@@ -18,27 +18,32 @@
                     Text="Stwórz licznik"
                     Clicked="Add_counter_clicked" />
         </Grid>
-    </Grid>
 
-    <CollectionView x:Name="countersCollection"
+        <CollectionView x:Name="countersCollection"
                     Grid.Row="1"
                     ItemsSource="{Binding Counters}"
                     SelectionMode="Single"
                     SelectionChanged="countersCollection_SelectionChanged"
                     EmptyView="Nie dodano jeszcze liczników.">
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="models:Counter">
-                <Grid Padding="12"
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Counter">
+                    <Grid Padding="12"
                   ColumnDefinitions="*,Auto"
                   ColumnSpacing="12">
-                    <Label Grid.Column="0"
+                        <Label Grid.Column="0"
                        Text="{Binding Name}"
                        FontSize="22" />
-                    <Label Grid.Column="1"
+                        <Label Grid.Column="1"
                            Text="{Binding Value}"
                            FontSize="22"/>
-                </Grid>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Grid.Row="2" 
+                Grid.Column="0"
+                Text="Zapisz"
+                Clicked="Save_clicked"/>
+    </Grid>
 </ContentPage>
