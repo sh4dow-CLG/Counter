@@ -61,8 +61,8 @@ namespace Counter.Models
                 string? name = counterElement.Element("Name")?.Value;
                 string? valueText = counterElement.Element("Value")?.Value;
                 string initialValueText = counterElement.Element("InitialValue")?.Value ?? "0";
-                string color = (counterElement.Element("Color")?.Value ?? Counter.DefaultColor)
-                    .Trim().ToUpperInvariant();
+                string color = Counter.NormalizeColor(
+                    counterElement.Element("Color")?.Value ?? Counter.DefaultColor);
 
                 if (string.IsNullOrWhiteSpace(name) ||
                     !int.TryParse(valueText, out int value) ||

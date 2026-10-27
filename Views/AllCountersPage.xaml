@@ -1,21 +1,18 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:Counter.Models"
-             x:Class="Counter.Views.AllCountersPage"
-             x:DataType="models:AllCounters"
-             Title="Liczniki">
-    <Grid Padding="20" RowDefinitions="Auto,*,Auto" RowSpacing="16">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:models="clr-namespace:Counter.Models" x:Class="Counter.Views.AllCountersPage" x:DataType="models:AllCounters" Title="Liczniki">
+    <Shell.TitleView>
+        <Label Text="Liczniki" FontFamily="Zodiak" FontSize="24"
+               TextColor="{StaticResource AppBackground}" VerticalTextAlignment="Center"
+               HorizontalOptions="Start" VerticalOptions="Center" />
+    </Shell.TitleView>
+    <Grid Padding="20" RowDefinitions="Auto,*,Auto,Auto" RowSpacing="16">
         <VerticalStackLayout x:Name="CreationForm" Grid.Row="0" Spacing="8">
             <Label Text="Nowy licznik" FontSize="22" />
-            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
-                  ColumnSpacing="12" RowSpacing="4">
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="4">
                 <Label Grid.Row="0" Grid.Column="0" Text="Nazwa" />
                 <Label Grid.Row="0" Grid.Column="1" Text="Wartość początkowa" />
-                <Entry x:Name="NameEntry" Grid.Row="1" Grid.Column="0"
-                       Placeholder="Np. Pompki" />
-                <Entry x:Name="InitialValueEntry" Grid.Row="1" Grid.Column="1"
-                       Text="0" />
+                <Entry x:Name="NameEntry" Grid.Row="1" Grid.Column="0" Placeholder="Np. Pompki" />
+                <Entry x:Name="InitialValueEntry" Grid.Row="1" Grid.Column="1" Text="0" />
             </Grid>
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                 <Picker x:Name="ColorPicker" Grid.Column="0" Title="Kolor licznika" />
@@ -23,24 +20,18 @@
             </Grid>
         </VerticalStackLayout>
 
-        <CollectionView x:Name="countersCollection" Grid.Row="1"
-                        ItemsSource="{Binding Counters}" SelectionMode="Single"
-                        SelectionChanged="countersCollection_SelectionChanged"
-                        EmptyView="Nie dodano jeszcze liczników.">
+        <CollectionView x:Name="countersCollection" Grid.Row="1" ItemsSource="{Binding Counters}" SelectionMode="Single" SelectionChanged="countersCollection_SelectionChanged" EmptyView="Nie dodano jeszcze liczników.">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Counter">
                     <Border Padding="12" StrokeShape="RoundRectangle 8">
-                        <Grid ColumnDefinitions="8,*,Auto" RowDefinitions="Auto,Auto"
-                              ColumnSpacing="12" RowSpacing="4">
+                        <Grid ColumnDefinitions="8,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="4">
                             <BoxView Grid.Column="0" Grid.RowSpan="2" Color="{Binding Color}" />
                             <Label Grid.Column="1" Grid.Row="0" Text="{Binding Name}" FontSize="22" />
-                            <Label Grid.Column="1" Grid.Row="1"
-                                   Text="{Binding InitialValue, StringFormat='Początkowa: {0}'}" FontSize="12" />
-                            <Label Grid.Column="2" Grid.RowSpan="2" Text="{Binding Value}"
-                                   FontSize="28" VerticalTextAlignment="Center" />
+                            <Label Grid.Column="1" Grid.Row="1" Text="{Binding InitialValue, StringFormat='Początkowa: {0}'}" FontSize="12" />
+                            <Label Grid.Column="2" Grid.RowSpan="2" Text="{Binding Value}" FontSize="28" VerticalTextAlignment="Center" />
                         </Grid>
                     </Border>
                 </DataTemplate>
@@ -48,5 +39,6 @@
         </CollectionView>
 
         <Button x:Name="SaveButton" Grid.Row="2" Text="Zapisz" Clicked="Save_clicked" />
+        <Label Text="Autor: Franciszek Wawrzeń" FontSize="12" Grid.Row="3" BackgroundColor="{StaticResource AppBackground}" TextColor="{StaticResource Primary}" Padding="12" HorizontalTextAlignment="Center" />
     </Grid>
 </ContentPage>
