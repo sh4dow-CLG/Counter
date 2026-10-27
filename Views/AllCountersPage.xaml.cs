@@ -1,56 +1,82 @@
-
 namespace Counter.Views;
 
 public partial class AllCountersPage : ContentPage
 {
     private readonly Models.AllCounters allCounters = new();
-    private bool dataLoaded = false;
+    private bool loadAttempted;
+
     public AllCountersPage()
     {
         InitializeComponent();
         BindingContext = allCounters;
+        ColorPicker.ItemsSource = Models.Counter.AvailableColors.Keys.ToList();
+        ColorPicker.SelectedIndex = 0;
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
 
-        if (dataLoaded)
+        if (loadAttempted)
         {
             return;
         }
-        dataLoaded = true;
+
+        loadAttempted = true;
 
         try
         {
             allCounters.LoadCounters();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (
+            ex is IOException || ex is UnauthorizedAccessException ||
+            ex is System.Xml.XmlException || ex is FormatException)
         {
+            CreationForm.IsEnabled = false;
+            SaveButton.IsEnabled = false;
             await DisplayAlertAsync("Błąd odczytu", ex.Message, "OK");
         }
     }
 
     private async void Add_counter_clicked(object sender, EventArgs e)
     {
-        string name = NameEntry.Text ?? string.Empty;
+        string name = NameEntry.Text?.Trim() ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(name))
         {
-            await DisplayAlertAsync(
-                "Brak nazwy",
-                "Wpisz nazwę licznika.",
-                "OK");
+            await DisplayAlertAsync("Brak nazwy", "Wpisz nazwę licznika.", "OK");
             return;
         }
-        allCounters.Counters.Add(new Models.Counter
+
+        if (!int.TryParse(InitialValueEntry.Text, out int initialValue))
         {
-            Name = name
+            await DisplayAlertAsync("Niepoprawna wartość", "Wpisz liczbę całkowitą z zakresu int.", "OK");
+            return;
+        }
 
-        });
+        string colorName = ColorPicker.SelectedItem as string ?? "Niebieski";
+        Models.Counter counter = new()
+        {
+            Name = name,
+            InitialValue = initialValue,
+            Value = initialValue,
+            Color = Models.Counter.AvailableColors[colorName]
+        };
 
+        allCounters.Counters.Add(counter);
 
-        NameEntry.Text = string.Empty;
+        try
+        {
+            allCounters.SaveCounters();
+            NameEntry.Text = string.Empty;
+            InitialValueEntry.Text = "0";
+        }
+        catch (Exception ex) when (
+            ex is IOException || ex is UnauthorizedAccessException || ex is InvalidOperationException)
+        {
+            allCounters.Counters.Remove(counter);
+            await DisplayAlertAsync("Błąd autozapisu", ex.Message, "OK");
+        }
     }
 
     private async void countersCollection_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -60,10 +86,9 @@ public partial class AllCountersPage : ContentPage
             return;
         }
 
-        Models.Counter counter = (Models.Counter)e.CurrentSelection[0]; //określa typ
-        countersCollection.SelectedItem = null; //usuwa zaznaczenie aby po prowocie wybrac ten sam licznik
-
-        await Navigation.PushAsync(new CounterPage(counter));
+        Models.Counter counter = (Models.Counter)e.CurrentSelection[0];
+        countersCollection.SelectedItem = null;
+        await Navigation.PushAsync(new CounterPage(counter, allCounters));
     }
 
     private async void Save_clicked(object sender, EventArgs e)
@@ -71,13 +96,10 @@ public partial class AllCountersPage : ContentPage
         try
         {
             allCounters.SaveCounters();
-
-            await DisplayAlertAsync(
-                "Zapis",
-                "Liczniki zostały zapisane.",
-                "OK");
+            await DisplayAlertAsync("Zapis", "Liczniki zostały zapisane.", "OK");
         }
-        catch (Exception ex)
+        catch (Exception ex) when (
+            ex is IOException || ex is UnauthorizedAccessException || ex is InvalidOperationException)
         {
             await DisplayAlertAsync("Błąd zapisu", ex.Message, "OK");
         }

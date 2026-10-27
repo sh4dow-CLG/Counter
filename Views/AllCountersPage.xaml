@@ -5,45 +5,48 @@
              x:Class="Counter.Views.AllCountersPage"
              x:DataType="models:AllCounters"
              Title="Liczniki">
-    <Grid Padding="20"
-          RowDefinitions="Auto, *, Auto"
-          RowSpacing="12">
-        <Grid Grid.Row="0"
-              ColumnDefinitions="*, Auto"
-              ColumnSpacing="8">
-            <Entry x:Name="NameEntry"
-                   Grid.Column="0"
-                   Placeholder="Nazwa licznika" />
-            <Button Grid.Column="1"
-                    Text="Stwórz licznik"
-                    Clicked="Add_counter_clicked" />
-        </Grid>
+    <Grid Padding="20" RowDefinitions="Auto,*,Auto" RowSpacing="16">
+        <VerticalStackLayout x:Name="CreationForm" Grid.Row="0" Spacing="8">
+            <Label Text="Nowy licznik" FontSize="22" />
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
+                  ColumnSpacing="12" RowSpacing="4">
+                <Label Grid.Row="0" Grid.Column="0" Text="Nazwa" />
+                <Label Grid.Row="0" Grid.Column="1" Text="Wartość początkowa" />
+                <Entry x:Name="NameEntry" Grid.Row="1" Grid.Column="0"
+                       Placeholder="Np. Pompki" />
+                <Entry x:Name="InitialValueEntry" Grid.Row="1" Grid.Column="1"
+                       Text="0" />
+            </Grid>
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <Picker x:Name="ColorPicker" Grid.Column="0" Title="Kolor licznika" />
+                <Button Grid.Column="1" Text="Stwórz licznik" Clicked="Add_counter_clicked" />
+            </Grid>
+        </VerticalStackLayout>
 
-        <CollectionView x:Name="countersCollection"
-                    Grid.Row="1"
-                    ItemsSource="{Binding Counters}"
-                    SelectionMode="Single"
-                    SelectionChanged="countersCollection_SelectionChanged"
-                    EmptyView="Nie dodano jeszcze liczników.">
+        <CollectionView x:Name="countersCollection" Grid.Row="1"
+                        ItemsSource="{Binding Counters}" SelectionMode="Single"
+                        SelectionChanged="countersCollection_SelectionChanged"
+                        EmptyView="Nie dodano jeszcze liczników.">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Counter">
-                    <Grid Padding="12"
-                  ColumnDefinitions="*,Auto"
-                  ColumnSpacing="12">
-                        <Label Grid.Column="0"
-                       Text="{Binding Name}"
-                       FontSize="22" />
-                        <Label Grid.Column="1"
-                           Text="{Binding Value}"
-                           FontSize="22"/>
-                    </Grid>
+                    <Border Padding="12" StrokeShape="RoundRectangle 8">
+                        <Grid ColumnDefinitions="8,*,Auto" RowDefinitions="Auto,Auto"
+                              ColumnSpacing="12" RowSpacing="4">
+                            <BoxView Grid.Column="0" Grid.RowSpan="2" Color="{Binding Color}" />
+                            <Label Grid.Column="1" Grid.Row="0" Text="{Binding Name}" FontSize="22" />
+                            <Label Grid.Column="1" Grid.Row="1"
+                                   Text="{Binding InitialValue, StringFormat='Początkowa: {0}'}" FontSize="12" />
+                            <Label Grid.Column="2" Grid.RowSpan="2" Text="{Binding Value}"
+                                   FontSize="28" VerticalTextAlignment="Center" />
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Grid.Row="2" 
-                Grid.Column="0"
-                Text="Zapisz"
-                Clicked="Save_clicked"/>
+        <Button x:Name="SaveButton" Grid.Row="2" Text="Zapisz" Clicked="Save_clicked" />
     </Grid>
 </ContentPage>

@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Counter.Models"
              x:Class="Counter.Views.CounterPage"
-             xmlns:models ="clr-namespace:Counter.Models"
              x:DataType="models:Counter"
              Title="{Binding Name}">
-    <VerticalStackLayout Padding="24" Spacing="12">
-        <Label Text="{Binding Name}" FontSize="32" />
-        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="6">
-            <Button Grid.Column="0"
-                    Text="-"
-                    Clicked="SubtractButton_Clicked" />
-            <Label x:Name="Number"
-                   Grid.Column="1"
-                   FontSize="32"
-                   Text="{Binding Value}"
-                   HorizontalTextAlignment="Center"
-                   VerticalTextAlignment="Center" />
-            <Button Grid.Column="2"
-                    Text="+"
-                    Clicked="AdditionButton_Clicked" />
-        </Grid>
-
-        <Label Text="Autor: Franciszek Wawrzeń" />
-    </VerticalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="12">
+            <Label Text="{Binding Name}" FontSize="28" />
+            <BoxView Color="{Binding Color}" HeightRequest="8" />
+            <Label Text="{Binding InitialValue, StringFormat='Początkowa: {0}'}" />
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="6">
+                <Button Grid.Column="0" Text="-" Clicked="SubtractButton_Clicked" />
+                <Label x:Name="Number" Grid.Column="1" Text="{Binding Value}" FontSize="44"
+                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                <Button Grid.Column="2" Text="+" Clicked="AdditionButton_Clicked" />
+            </Grid>
+            <Button Text="Reset do wartości początkowej" Clicked="Reset_clicked" />
+            <Label Text="Kolor licznika" />
+            <Picker x:Name="ColorPicker" Title="Wybierz kolor"
+                    SelectedIndexChanged="Color_changed" />
+            <Button Text="Usuń licznik" BackgroundColor="#B91C1C" TextColor="White"
+                    Clicked="Delete_clicked" />
+            <Button Text="Powrót do listy" Clicked="Back_clicked" />
+            <Label Text="Autor: Franciszek Wawrzeń" FontSize="12" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
