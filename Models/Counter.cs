@@ -15,15 +15,6 @@ namespace Counter.Models
             ["Różowy"] = "#B481BB"
         };
 
-        private static readonly Dictionary<string, string> LegacyColors = new()
-        {
-            ["#2563EB"] = "Niebieski",
-            ["#15803D"] = "Zielony",
-            ["#C2410C"] = "Pomarańczowy",
-            ["#7E22CE"] = "Fioletowy",
-            ["#BE185D"] = "Różowy"
-        };
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public string Name { get; set; } = string.Empty;
@@ -52,33 +43,20 @@ namespace Counter.Models
             get { return _color; }
             set
             {
-                string normalizedColor = NormalizeColor(value);
-
-                if (!AvailableColors.Values.Contains(normalizedColor))
+                if (!AvailableColors.Values.Contains(value))
                 {
                     throw new ArgumentException("Wybierz kolor z dostępnej listy.");
                 }
 
-                if (_color == normalizedColor)
+                if (_color == value)
                 {
                     return;
                 }
 
-                _color = normalizedColor;
+                _color = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Color)));
             }
         }
 
-        public static string NormalizeColor(string color)
-        {
-            string normalizedColor = color.Trim().ToUpperInvariant();
-
-            if (LegacyColors.TryGetValue(normalizedColor, out string? name))
-            {
-                return AvailableColors[name];
-            }
-
-            return normalizedColor;
-        }
     }
 }
